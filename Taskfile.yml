@@ -7,6 +7,8 @@ vars:
   PROJECT_DIR: $(pwd)
 
   # Network.
+  # The IP address may be whatever you like but make sure it belongs the subnet you created before.
+  # It can be helpful to map the IP address to a hostname using /etc/hosts file.
   IP: '172.30.0.1'
   SUBNET: '172.30.0.0/16'
   GATEWAY: '172.30.0.254'
