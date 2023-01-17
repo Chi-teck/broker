@@ -111,7 +111,7 @@ tasks:
     cmds:
       - docker build --build-arg USER_NAME={{.USER_NAME}} --build-arg USER_UID=$(id -u) --build-arg USER_GID=$(id -g) -t {{.IMAGE}} image
 
-  remove-image:
+  image-remove:
     desc: 'Remove the image.'
     cmds:
       - docker rmi {{.IMAGE}}
