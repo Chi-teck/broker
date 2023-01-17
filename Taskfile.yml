@@ -4,6 +4,7 @@ vars:
   PROJECT_NAME: example
   USER_NAME: broker
   IMAGE: 'my/{{.PROJECT_NAME}}'
+  PROJECT_DIR: $(pwd)
 
   # Network.
   IP: '172.30.0.1'
@@ -17,19 +18,20 @@ vars:
   IMAGE_EXISTS: 'docker inspect {{.IMAGE}} > /dev/null 2>&1'
   NETWORK_EXISTS: 'docker network inspect {{.NETWORK_NAME}} > /dev/null 2>&1'
 
+silent: true
 tasks:
   default:
     cmds:
       - task --list
 
   status:
-    desc: 'Display container status.'
+    desc: 'Display project status.'
     cmds:
       - 'echo -----------------------------'
-      - 'echo -e -n "Image exists:\t\t " && {{.IMAGE_EXISTS}} && echo Yes || echo No'
-      - 'echo -e -n "Network exists:\t\t " && {{.NETWORK_EXISTS}} && echo Yes || echo No'
-      - 'echo -e -n "Container exists:\t " && {{.CONTAINER_EXISTS}} && echo Yes || echo No'
-      - 'echo -e -n "Container is started:\t " && {{.CONTAINER_IS_STARTED}} && echo Yes || echo No'
+      - 'echo -e -n " Image exists:\t\t " && {{.IMAGE_EXISTS}} && echo Yes || echo No'
+      - 'echo -e -n " Network exists:\t " && {{.NETWORK_EXISTS}} && echo Yes || echo No'
+      - 'echo -e -n " Container exists:\t " && {{.CONTAINER_EXISTS}} && echo Yes || echo No'
+      - 'echo -e -n " Container is started:\t " && {{.CONTAINER_IS_STARTED}} && echo Yes || echo No'
       - 'echo -----------------------------'
     silent: true
 
@@ -39,10 +41,12 @@ tasks:
       - docker create
         --name={{.PROJECT_NAME}}
         --hostname={{.PROJECT_NAME}}
-        --volume=$(pwd)/mnt/mariadb:/var/mysql
-        --volume=$(pwd)/mnt/www:/var/www
         --net={{.NETWORK_NAME}}
         --ip={{.IP}}
+        --volume=$HOME/Downloads:/mnt/host/downloads
+        --volume={{.PROJECT_DIR}}/mnt/ssh:/home/{{.USER_NAME}}/.ssh
+        --volume={{.PROJECT_DIR}}/mnt/mariadb:/var/mysql
+        --volume={{.PROJECT_DIR}}/mnt/www:/var/www
         {{.IMAGE}}
     preconditions:
       - sh: '{{.IMAGE_EXISTS}}'
