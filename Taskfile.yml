@@ -47,7 +47,7 @@ tasks:
         --ip={{.IP}}
         --volume=$HOME/Downloads:/mnt/host/downloads
         --volume={{.PROJECT_DIR}}/mnt/ssh:/home/{{.USER_NAME}}/.ssh
-        --volume={{.PROJECT_DIR}}/mnt/mariadb:/var/mysql
+        --volume={{.PROJECT_DIR}}/mnt/mariadb:/var/lib/mysql
         --volume={{.PROJECT_DIR}}/mnt/www:/var/www
         {{.IMAGE}}
     preconditions:
