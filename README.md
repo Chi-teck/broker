@@ -10,7 +10,7 @@ A docker based template for web development.
 
 ### Installation
 
-1. Clone the repository
+1. Download the repository
 2. Edit [Taskfile.yml](./Taskfile.yml)
 3. Edit [Dockerfile](./image/Dockerfile)
 4. Run `task rebuild`
