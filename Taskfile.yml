@@ -11,6 +11,7 @@ vars:
   SUBNET: '172.30.0.0/16'
   GATEWAY: '172.30.0.254'
   NETWORK_NAME: 'my'
+  PROJECT_HOST: '{{.PROJECT_NAME}}.local'
 
   # Tests.
   CONTAINER_IS_STARTED: '[[ $(docker inspect {{.PROJECT_NAME }} --format \{\{.State.Status\}\}) == running ]]'
@@ -41,9 +42,11 @@ tasks:
       - docker create
         --name={{.PROJECT_NAME}}
         --hostname={{.PROJECT_NAME}}
-        --add-host=client_host=host.docker.internal
+        --add-host=host.docker.internal:host-gateway
+        --add-host={{.PROJECT_HOST}}:{{.IP}}
         --net={{.NETWORK_NAME}}
         --ip={{.IP}}
+        --env=PHP_IDE_CONFIG='serverName={{.PROJECT_HOST}}'
         --volume=$HOME/Downloads:/mnt/host/downloads
         --volume={{.PROJECT_DIR}}/mnt/ssh:/home/{{.USER_NAME}}/.ssh
         --volume={{.PROJECT_DIR}}/mnt/mariadb:/var/lib/mysql
