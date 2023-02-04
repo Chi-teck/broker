@@ -41,6 +41,7 @@ tasks:
       - docker create
         --name={{.PROJECT_NAME}}
         --hostname={{.PROJECT_NAME}}
+        --add-host=client_host=host.docker.internal
         --net={{.NETWORK_NAME}}
         --ip={{.IP}}
         --volume=$HOME/Downloads:/mnt/host/downloads
