@@ -14,9 +14,10 @@ services:
     build:
       context: images/nginx
     container_name: "${PROJECT_NAME}_web"
+    depends_on: [php]
     networks:
       default:
-        ipv4_address: ${IP_WEB}
+        aliases: [broker.my]
     hostname: web
     volumes:
       - ./mnt/www:/var/www
@@ -25,9 +26,6 @@ services:
 #    build:
 #      context: images/apache
 #    container_name: "${PROJECT_NAME}_web"
-#    networks:
-#      default:
-#        ipv4_address: ${IP_WEB}
 #    hostname: web
 #    volumes:
 #      - ./mnt/www:/var/www
@@ -43,9 +41,6 @@ services:
         USER_PASSWORD: ${USER_PASSWORD}
         XDEBUG: $XDEBUG
     container_name: "${PROJECT_NAME}_php"
-    networks:
-      default:
-        ipv4_address: ${IP_PHP}
     hostname: php
     extra_hosts:
       - 'host.docker.internal:host-gateway'
@@ -59,35 +54,26 @@ services:
   db:
     image: mariadb
     container_name: "${PROJECT_NAME}_db"
-    networks:
-      default:
-        ipv4_address: ${IP_DB}
     hostname: db
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
 #    volumes:
 #      - ./mnt/mariadb:/var/lib/mysql
 
-  mailpit:
-    image: axllent/mailpit
-    container_name: "${PROJECT_NAME}_mailpit"
-    networks:
-      default:
-        ipv4_address: ${IP_MAILPIT}
-    hostname: mailpit
-    volumes:
-      - $HOME/Downloads:/mnt/host/downloads
-    command: ["--listen", "0.0.0.0:80"]
-
 #  db:
 #    image: postgres:15-bookworm
 #    container_name: "${PROJECT_NAME}_db"
-#    networks:
-#      default:
-#        ipv4_address: ${IP_DB}
 #    hostname: db
 #    environment:
 #      POSTGRES_USER: ${USER_NAME}
 #      POSTGRES_PASSWORD: ${DB_PASSWORD}
 #    # volumes:
 #    #   - ./mnt/postgresql:/var/lib/postgresql/data
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: "${PROJECT_NAME}_mailpit"
+    hostname: mailpit
+    volumes:
+      - $HOME/Downloads:/mnt/host/downloads
+    command: ["--listen", "0.0.0.0:80"]
