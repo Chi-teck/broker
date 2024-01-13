@@ -1,0 +1,71 @@
+networks:
+  default:
+    name: ${PROJECT_NAME}
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET}
+          gateway: ${IP_GATEWAY}
+
+services:
+  web:
+    build:
+      context: images/web
+    container_name: "${PROJECT_NAME}_web"
+    networks:
+      default:
+        ipv4_address: ${IP_WEB}
+    hostname: web
+    volumes:
+      - ./mnt/www:/var/www
+  php:
+    build:
+      context: images/php
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+        USER_NAME: ${USER_NAME}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
+        USER_PASSWORD: ${USER_PASSWORD}
+        XDEBUG: $XDEBUG
+    container_name: "${PROJECT_NAME}_php"
+    networks:
+      default:
+        ipv4_address: ${IP_PHP}
+    hostname: php
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    volumes:
+      - ./mnt/ssh:/home/${USER_NAME}/.ssh
+      - ./mnt/www:/var/www
+      - $HOME/Downloads:/mnt/host/downloads
+  db:
+    image: mariadb
+    container_name: "${PROJECT_NAME}_db"
+    networks:
+      default:
+        ipv4_address: ${IP_DB}
+    hostname: db
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./mnt/mariadb:/var/lib/mysql
+  mailpit:
+    image: axllent/mailpit
+    container_name: "${PROJECT_NAME}_mailpit"
+    networks:
+      default:
+        ipv4_address: ${IP_MAILPIT}
+    hostname: mailpit
+    volumes:
+      - $HOME/Downloads:/mnt/host/downloads
+    command: ["--listen", "0.0.0.0:80"]
+#  db:
+#    image: attr/postgres:15
+#    container_name: "${PROJECT_NAME}_db"
+#    networks:
+#      default:
+#        ipv4_address: ${IP_DB}
+#    hostname: db
+#    environment:
+#      POSTGRES_PASSWORD: ${DB_PASSWORD}
