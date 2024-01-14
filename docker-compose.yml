@@ -15,10 +15,7 @@ services:
       context: images/nginx
     container_name: "${PROJECT_NAME}_web"
     depends_on: [php]
-    networks:
-      default:
-        aliases: [broker.my]
-    hostname: web
+    hostname: "${PROJECT_HOSTNAME}"
     volumes:
       - ./mnt/www:/var/www
 
@@ -26,7 +23,7 @@ services:
 #    build:
 #      context: images/apache
 #    container_name: "${PROJECT_NAME}_web"
-#    hostname: web
+#    hostname: ${PROJECT_HOSTNAME}"
 #    volumes:
 #      - ./mnt/www:/var/www
 
@@ -34,14 +31,14 @@ services:
     build:
       context: images/php-fpm
       args:
-        PHP_VERSION: ${PHP_VERSION}
         USER_NAME: ${USER_NAME}
         USER_UID: ${USER_UID}
         USER_GID: ${USER_GID}
         USER_PASSWORD: ${USER_PASSWORD}
+        PHP_VERSION: ${PHP_VERSION}
         XDEBUG: $XDEBUG
     container_name: "${PROJECT_NAME}_php"
-    hostname: php
+    hostname: "php.${PROJECT_HOSTNAME}"
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     volumes:
@@ -49,12 +46,12 @@ services:
       - ./mnt/www:/var/www
       - $HOME/Downloads:/mnt/host/downloads
 #    environment:
-#      PGHOST: db
+#      PGHOST: db.example.local
 
   db:
     image: mariadb
     container_name: "${PROJECT_NAME}_db"
-    hostname: db
+    hostname: "db.${PROJECT_HOSTNAME}"
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
 #    volumes:
@@ -63,7 +60,7 @@ services:
 #  db:
 #    image: postgres:15-bookworm
 #    container_name: "${PROJECT_NAME}_db"
-#    hostname: db
+#    hostname: "db.${PROJECT_HOSTNAME}"
 #    environment:
 #      POSTGRES_USER: ${USER_NAME}
 #      POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -73,7 +70,5 @@ services:
   mailpit:
     image: axllent/mailpit
     container_name: "${PROJECT_NAME}_mailpit"
-    hostname: mailpit
-    volumes:
-      - $HOME/Downloads:/mnt/host/downloads
+    hostname: "mailpit.${PROJECT_HOSTNAME}"
     command: ["--listen", "0.0.0.0:80"]
