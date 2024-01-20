@@ -1,12 +1,12 @@
-networks:
-
-  default:
-    name: ${PROJECT_NAME}
-    ipam:
-      driver: default
-      config:
-        - subnet: ${SUBNET}
-          gateway: ${IP_GATEWAY}
+#networks:
+#
+#  default:
+#    name: ${PROJECT_NAME}
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: ${SUBNET}
+#          gateway: ${IP_GATEWAY}
 
 services:
 
@@ -22,10 +22,21 @@ services:
 #  web:
 #    build:
 #      context: images/apache
+#      args:
+#        USER_NAME: ${USER_NAME}
+#        USER_UID: ${USER_UID}
+#        USER_GID: ${USER_GID}
+#        USER_PASSWORD: ${USER_PASSWORD}
+#        PHP_VERSION: ${PHP_VERSION}
+#        XDEBUG: $XDEBUG
 #    container_name: "${PROJECT_NAME}_web"
-#    hostname: ${PROJECT_HOSTNAME}"
+#    hostname: "${PROJECT_HOSTNAME}"
 #    volumes:
+#      - ./mnt/ssh:/home/${USER_NAME}/.ssh
 #      - ./mnt/www:/var/www
+#      - $HOME/Downloads:/mnt/host/downloads
+#    environment:
+#      PGHOST: db.example.local
 
   php:
     build:
